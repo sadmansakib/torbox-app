@@ -198,10 +198,10 @@ export function useFetchData(apiKey, type = 'torrents') {
         const data = await response.json();
 
         if (
-          data.success &&
+          data &&
+          (data.success === true || data.success === undefined) &&
           data.data &&
-          Array.isArray(data.data) &&
-          data.data.length > 0
+          Array.isArray(data.data)
         ) {
           // Sort items by added date if available
           const sortedItems = sortItems(data.data);
@@ -218,6 +218,7 @@ export function useFetchData(apiKey, type = 'torrents') {
               setTorrents(sortedItems);
               // Only check auto-start for torrents if 30 seconds have elapsed
               if (
+                sortedItems.length > 0 &&
                 now - lastAutoStartCheckRef.current >=
                 AUTO_START_CHECK_INTERVAL
               ) {
